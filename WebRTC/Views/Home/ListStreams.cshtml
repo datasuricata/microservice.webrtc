@@ -1,0 +1,48 @@
+﻿@model  IEnumerable<WebRTC.Models.Stream>
+
+@{
+    Layout = null;
+}
+
+<div class="modal-body">
+    <p>Visualização rápida de todas as sessões ativas</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Criação</th>
+                <th>Projeto</th>
+                <th>Endereço</th>
+                <th>Sessão</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var stream in Model) {
+            <tr>
+                <td>@stream.Name</td>
+                <td>@stream.CreatedAt.ToString("dd/MM/yyyy")</td>
+                <td>@stream.Project.Name</td>
+                <td>@stream.IpAddress</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(stream.SessionReferenceId)) {
+                        <a href="@Url.Action("Broadcast", "Home", new { id = stream.Id, broadcast = true })" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="right" title="Broadcast On" style="width:60px;">
+                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                        </a>
+                    }
+                    else {
+                        <a href="@Url.Action("Broadcast", "Home", new { id = stream.Id, broadcast = false })" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="right" title="Broadcast Off" style="width:60px;">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                    }
+                </td>
+                <td>
+                    <a href="@Url.Action("DeleteStream", "Home", new { id = stream.Id })" class="btn btn-danger btn-xs">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

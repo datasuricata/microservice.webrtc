@@ -1,0 +1,280 @@
+﻿@model IEnumerable<WebRTC.Models.Stream>
+@using WebRTC.Models
+
+@{
+    ViewBag.Title = "WebRTC - AutoTech";
+    var role = (UserRole)Enum.Parse(typeof(UserRole), Session["Role"].ToString());
+}
+
+<!-- Header info -->
+<div class="jumbotron">
+    <h2>@ViewBag.Title</h2>
+    <br />
+    <p class="lead">Microserviço para transmissão em tempo real de vídeo via protocolo RTC, utilizando .NET com C# embarcado em Web API 2 e TokBox</p>
+    <p>
+        <a target="_blank" href="https://tokbox.com/" class="btn btn-sm btn-info">TokBox &raquo;</a>
+        <a target="_blank" href="https://docs.microsoft.com/pt-br/aspnet/mvc/overview/getting-started/introduction/getting-started" class="btn btn-sm btn-primary">.NET &raquo;</a>
+        <a target="_blank" href="https://docs.microsoft.com/pt-br/dotnet/csharp/" class="btn btn-sm btn-warning">C# &raquo;</a>
+    </p>
+</div>
+
+@if (role == UserRole.Admin) {
+    <!-- First Row Buttons -->
+    <div class="row">
+        <div class="col-md-4">
+            <a data-toggle="modal" data-target="#project" class="btn btn-default" style="width:100%;">
+                <h4>Projeto</h4>
+                <p>
+                    Adicione projetos
+                </p>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a data-toggle="modal" data-target="#session" class="btn btn-default" style="width:100%;">
+                <h4>Sessão</h4>
+                <p>
+                    Vincule sessões
+                </p>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a data-toggle="modal" data-target="#monitor" class="btn btn-default" style="width:100%;">
+                <h4>Monitorar</h4>
+                <p>
+                    Monitore peers ativos
+                </p>
+            </a>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Second Row Buttons -->
+    <div class="row">
+        <div class="col-md-5">
+            <a href="@Url.Action("ListProjects", "Home")" data-toggle="modal" data-target="#monitorProject" class="btn btn-default" style="width:100%;">
+                <h4>Visão Geral (Projetos)</h4>
+                <p>
+                    Projetos na memória
+                </p>
+            </a>
+        </div>
+        <div class="col-md-5">
+            <a href="@Url.Action("ListStreams", "Home")" data-toggle="modal" data-target="#monitorSession" class="btn btn-default" style="width:100%;">
+                <h4>Visão Geral (Sessões)</h4>
+                <p>
+                    Sessões na memória
+                </p>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="@Url.Action("Links", "Home")" data-toggle="modal" data-target="#showLinks" class="btn btn-default" style="width:100%;">
+                <h4>Links</h4>
+                <p class="badge">
+                    Transmissores
+                </p>
+            </a>
+        </div>
+    </div>
+}
+
+
+@if (role == UserRole.Client) {
+    <br />
+    <div class="jumbotron">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sala</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any()) {
+                    foreach (var stream in Model) {
+                        <tr>
+                            <td>@stream.Name</td>
+                            <td>@stream.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (string.IsNullOrEmpty(stream.SessionReferenceId)) {
+                                    <b class="text-danger">Inativo</b>
+                                }
+                                else {
+                                    <b class="text-success">Ativo</b>
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-danger" target="_blank" href="@Url.Action("Publish", "Live", new { id = stream.Id })" style="width:100%">Iniciar Transmissão</a>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-addon btn" onclick="copyClipboard('@stream.Id')" aria-hidden="true">❏</span>
+                                    <input type="text" class="form-control" readonly id="@($"copyInput{stream.Id}")" style="max-width:100%" value="@($"{Session["Endpoint"]}/Live/Subscribe/{stream.Id}")">
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<!-- Modal Project -->
+<div class="modal fade" id="project" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form action="/Home/Project" method="post" class="form-horizontal">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Criar Projeto</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <label for="name" class="control-label">Nome:</label>
+                                    <input type="text" class="form-control" style="max-width:100% !important" name="name" id="name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <label for="key" class="control-label">Chave:</label>
+                                    <input type="number" class="form-control" style="max-width:100% !important" name="key" id="key">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <label for="secret" class="control-label">Segredo:</label>
+                                    <input type="password" class="form-control" style="max-width:100% !important" name="secret" id="secret">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary">Adicionar</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Sair</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal Session-->
+<div class="modal fade" id="session" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form action="/Home/Stream" method="post" class="form-horizontal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Criar Sessão</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <label for="name" class="control-label">Nome:</label>
+                                    <input type="text" class="form-control" style="max-width:100% !important" name="name" id="name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <label for="name" class="control-label">Projeto:</label>
+                                    @Html.DropDownList("projectId", (List<SelectListItem>)ViewBag.Dropdown, "Selecione", new {
+                                        @class = "form-control",
+                                        @style = "max-width:100% !important"
+                                    })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary">Adicionar</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Sair</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Monitor-->
+<div class="modal fade" id="monitor" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Monitorar Sessão</h4>
+            </div>
+            <div class="modal-body" style="padding:0px;">
+                <a href="mailto:lucas.moraes.dev@gmail.com">
+                    <h3 class="bg-danger text-center text-danger text-uppercase" style="padding:10px; margin:0px; background-color:#C70039; color:white">
+                        Desenvolvimento
+                    </h3>
+                </a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Sair</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Geral Project -->
+<div class="modal fade" id="monitorProject" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            @{ Html.RenderPartial("ListProjects", new List<Project>()); }
+        </div>
+    </div>
+</div>
+
+<!-- Modal Geral Sessions -->
+<div class="modal fade" id="monitorSession" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            @{ Html.RenderPartial("ListStreams", new List<WebRTC.Models.Stream>()); }
+        </div>
+    </div>
+</div>
+
+<!-- Modal Geral Sessions -->
+<div class="modal fade" id="showLinks" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            @{ Html.RenderPartial("Links", new List<WebRTC.Models.Stream>()); }
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyClipboard(data) {
+        var element = 'copyInput' + data;
+        var copyText = document.getElementById(element);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999)
+        document.execCommand("Copy");
+        alert("Url de acompanhamento copiada: " + copyText.value);
+        document.execCommand('copy')
+    }
+</script>

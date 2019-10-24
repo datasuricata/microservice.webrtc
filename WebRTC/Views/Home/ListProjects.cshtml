@@ -1,0 +1,51 @@
+﻿@model  IEnumerable<WebRTC.Models.Project>
+
+@{
+    Layout = null;
+}
+
+<div class="modal-body">
+    <p>Visualização rápida de todas os projetos ativos</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Criação</th>
+                <th>Key</th>
+                <th>Sessões Ativas</th>
+                <th>Servidor</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var project in Model) {
+                <tr>
+                    <td>@project.Name</td>
+                    <td>@project.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    <td>@project.Key</td>
+                    @{
+                        var sessoes = project.Sessions;
+                    }
+                    <td>@sessoes.Count(x => !string.IsNullOrEmpty(x.SessionReferenceId)) de @sessoes.Count()</td>
+                    <td>
+                        @if (project.Server != null) {
+                            <a href="#" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="right" title="Server On" style="width:60px;">
+                                <span class="text-success glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+                            </a>
+                        }
+                        else {
+                            <a href="#" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="right" title="Server Off" style="width:60px;">
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </a>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("DeleteProject", "Home", new { id = project.Id })" class="btn btn-danger btn-xs">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

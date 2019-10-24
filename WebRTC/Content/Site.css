@@ -1,0 +1,115 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background: #3023ae;
+    background: -moz-linear-gradient(60deg, #3023ae 0%, #c86dd7 100%);
+    background: -webkit-linear-gradient(60deg, #3023ae 0%, #c86dd7 100%);
+    background: linear-gradient(60deg, #3023ae 0%, #c86dd7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3023ae', endColorstr='#c86dd7', GradientType=1);
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+input, button, a, select {
+    border-radius: 0px !important;
+    cursor: pointer;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#videos {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#subscriber {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+
+input {
+    width: 100%;
+    line-height: 50px;
+    text-indent: 10px;
+    font-size: 1.2em;
+}
+
+#publisher {
+    position: absolute;
+    width: 360px;
+    height: 240px;
+    bottom: 10px;
+    left: 10px;
+    z-index: 100;
+    border: 3px solid white;
+    border-radius: 3px;
+}
+
+.jumbotron {
+    border-radius: 0px !important;
+    background-color: #222222;
+    color: #ffffff;
+}
+
+hr {
+    border-top: 1px solid #2222;
+}
+
+.modal-content {
+    border-radius: 0px !important;
+    border-color: #ffffff;
+    border-width: 1px;
+    -webkit-box-shadow: 3px 4px 14px 0px rgba(0, 0, 0, 0.39);
+    -moz-box-shadow: 3px 4px 14px 0px rgba(0, 0, 0, 0.39);
+    box-shadow: 3px 4px 14px 0px rgba(0, 0, 0, 0.39);
+    background-color: #222222;
+    color: #ffffff;
+}
+
+label {
+    font-size: 12px;
+    line-height: 2.429;
+}
+
+.btn:hover {
+    background-color: #2222;
+    color: white;
+}
+
+.alert-error {
+    border-radius: 0px !important;
+    background-color: #C70039;
+    color: #ffffff;
+}
+
+.drop-shadow {
+    box-shadow: 5px 10px 18px #78281F;
+}
+
+.centralize {
+    width: 250px;
+    height: 100px;
+    margin: 0 auto;
+}

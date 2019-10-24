@@ -1,0 +1,53 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>WebRTC - Login</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400&display=swap" rel="stylesheet">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-md-12">
+            <div class="col-md-3 col-sm-2">
+
+            </div>
+            <div class="col-md-6 col-sm-8">
+                @RenderPage("~/Views/Shared/_Notifier.cshtml")
+                <div class="col-md-12 jumbotron">
+                    <form action="/Account/Login" method="post" class="form-signin text-center">
+                        <div class="centralize">
+                            <img class="img-responsive text-center" src="~/Content/img/logo.png" />
+                        </div>
+                        <p>
+                            <b class="text-uppercase" style="color:white; font-weight:lighter">painel autotech</b>
+                        </p>
+                        <br />
+
+                        <label for="inputEmail" class="sr-only">Email address</label>
+                        <input type="email" name="email" id="inputEmail" class="form-control" style="max-width:100%" placeholder="E-mail" required autofocus>
+                        <br />
+
+                        <label for="inputPassword" class="sr-only">Password</label>
+                        <input type="password" name="password" id="inputPassword" class="form-control" style="max-width:100%" placeholder="Senha" required>
+                        <br />
+
+                        <button class="btn btn-primary btn-block text-uppercase" type="submit">logar</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-2">
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

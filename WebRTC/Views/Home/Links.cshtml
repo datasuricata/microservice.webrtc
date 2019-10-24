@@ -1,0 +1,38 @@
+﻿@model  IEnumerable<WebRTC.Models.Stream>
+
+@{
+    Layout = null;
+}
+
+<div class="modal-body">
+    <h4 class="text-center">Links</h4>
+    <p class="text-center">Links de publicação e inscrição das sessões habilitadas</p>
+    <div class="row text-center">
+        @if (!Model.Any()) {
+            <h3 class="bg-danger text-center text-danger text-uppercase" style="padding:10px; background-color:#C70039; color:white">habilite sessões antes de prosseguir</h3>
+        }
+        else {
+            foreach (var group in Model.GroupBy(x => x.Project.Id)) {
+                <p>
+                    <h4 class="bg-danger text-center text-danger text-uppercase" style="padding:10px; background-color:#C70039; color:white"><b>@Model.Select(x => x.Project).FirstOrDefault(x => x.Id == group.Key).Name</b></h4>
+                </p>
+                foreach (var stream in group) {
+                    <div class="col-md-12" style="padding:2px;">
+                        <div class="col-md-4">
+                            <h5 class="text-uppercase">@stream.Name</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <a class="btn btn-danger" target="_blank" href="@Url.Action("Publish", "Live", new { id = stream.Id })" style="width:100%">Iniciar Transmissão</a>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon btn" onclick="copyClipboard('@stream.Id')" aria-hidden="true">❏</span>
+                                <input type="text" class="form-control" readonly id="@($"copyInput{stream.Id}")" value="@($"{Session["Endpoint"]}/Live/Subscribe/{stream.Id}")">
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>

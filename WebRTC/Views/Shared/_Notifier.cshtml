@@ -1,0 +1,7 @@
+﻿
+@if (TempData["Error"] != null) {
+    <div class="alert alert-error alert-dismissible drop-shadow" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @TempData["Error"]
+    </div>
+}
